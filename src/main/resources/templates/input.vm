@@ -1,0 +1,28 @@
+#if ($SpDescriptor.SpInputClassName)
+package $SpDescriptor.SpInputClassPackageName;
+
+/**
+ * 
+ * Auto generated code
+ * Bean for input parameters to stored procedure $SpDescriptor.SpName
+ *
+ */
+
+public class $SpDescriptor.SpInputClassName {
+
+//Fields
+#foreach($NameTypeBean in $SpDescriptor.InputParameters)	
+  private $NameTypeBean.JavaType $utility.toCamelCaseForVariable($NameTypeBean.Name);
+#end
+
+//Accessors
+#foreach($NameTypeBean in $SpDescriptor.InputParameters)	
+  public $NameTypeBean.JavaType get$utility.toCamelCaseForAccessors($NameTypeBean.Name)() {
+    return this.$utility.toCamelCaseForVariable($NameTypeBean.Name);
+  }	
+  public void set$utility.toCamelCaseForAccessors($NameTypeBean.Name)($NameTypeBean.JavaType $utility.toCamelCaseForVariable($NameTypeBean.Name)) {
+    this.$utility.toCamelCaseForVariable($NameTypeBean.Name) = $utility.toCamelCaseForVariable($NameTypeBean.Name);
+  }
+#end
+}
+#end

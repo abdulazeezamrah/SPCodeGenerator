@@ -1,0 +1,139 @@
+package $TableDescriptor.TableDaoPackageName;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
+import $TableDescriptor.MappedBeanPackageName.$TableDescriptor.MappedBeanClassName;
+
+/**
+ * 
+ * Auto generated code
+ *
+ */
+@Repository
+public class $TableDescriptor.TableDaoClassName {
+	private NamedParameterJdbcTemplate jdbcTemplate;
+	private DataSource dataSource;
+	private static final String tableName = "$TableDescriptor.TableName";
+#foreach($TableColumnDescriptor in $TableDescriptor.ColumnDescriptors)	
+ 	private static final String $TableColumnDescriptor.Column.Name = "$TableColumnDescriptor.Column.Name";
+#end
+
+	@Autowired
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+		this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+	}
+	
+	public NamedParameterJdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
+
+
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+
+	public String getTableName() {
+		return tableName;
+	}
+
+#set( $tableName = "" + $TableDescriptor.TableName)
+#set( $entityName = "" + $TableDescriptor.MappedBeanClassName)
+#set( $entityVariableName = "" + $utility.toCamelCaseForVariable($TableDescriptor.MappedBeanClassName))
+#set( $methArg = "" + $entityName + " " + $entityVariableName)
+#set( $entityVariableNameList = "" + $entityVariableName + "List")
+
+	public int update(String sql, $methArg){
+		Map<String,Object> paramMap = paramsMapLoader($entityVariableName);
+		int returnVal = jdbcTemplate.update(sql, paramMap);
+		return returnVal;
+	}
+
+	public int update(String sql, Map<String,Object> paramMap){
+		return jdbcTemplate.update(sql, paramMap);
+	}
+
+	public List<$entityName> queryForList(String sql,$methArg){
+         Map<String,Object> paramMap = paramsMapLoader($entityVariableName);
+         List<Map<String,Object>> listOfMaps = jdbcTemplate.queryForList(sql,paramMap);
+         List<$entityName> $entityVariableNameList = mapResultSets(listOfMaps);
+         return $entityVariableNameList;
+ 	}
+
+ 	public List<$entityName> queryForList(String sql,Map<String,Object> paramMap){
+         List<Map<String,Object>> listOfMaps = jdbcTemplate.queryForList(sql,paramMap);
+         List<$entityName> $entityVariableNameList = mapResultSets(listOfMaps);
+         return $entityVariableNameList;
+ 	}
+
+ 	public <T> List<T> queryForList(String sql,$methArg,RowMapper<T> rowMapper){
+         Map<String,Object> paramMap = paramsMapLoader($entityVariableName);
+         return jdbcTemplate.query(sql,paramMap,rowMapper);
+ 	}
+
+ 	public <T> List<T> queryForList(String sql,Map<String,Object> paramMap,RowMapper<T> rowMapper){
+         return jdbcTemplate.query(sql,paramMap,rowMapper);
+ 	}
+
+	public Map<String, Object> paramsMapLoader($methArg) {
+		Map<String, Object> result = new HashMap<String, Object>();
+#foreach($TableColumnDescriptor in $TableDescriptor.ColumnDescriptors)
+#if (!$utility.isNullOrEmptyString($TableColumnDescriptor.GetSqlMethodName))
+#set(  $varName2 = ""+$TableColumnDescriptor.GetSqlMethodName+"()")
+		if($entityVariableName.$varName2 != null){
+				result.put($TableColumnDescriptor.Column.Name, $entityVariableName.$varName2);
+		}
+#else
+#set(  $varName2 = ""+$utility.getGetterName($TableColumnDescriptor.SetterMethodName)+"()")
+		if($entityVariableName.$varName2 != null){
+				result.put($TableColumnDescriptor.Column.Name, $entityVariableName.$varName2);
+		}
+#end
+#end
+		return result;
+	}
+
+	public List<$entityName> mapResultSets(List<Map<String,Object>> listOfMaps){
+		List<$entityName> $entityVariableNameList = new ArrayList<$entityName>();
+		for(Map<String,Object> row : listOfMaps){
+			$entityName $entityVariableName = new $entityName();
+#set(  $varName1 = ".add("+$entityVariableName+")")
+#foreach($TableColumnDescriptor in $TableDescriptor.ColumnDescriptors)
+#set(  $varName2 = "."+$TableColumnDescriptor.SetterMethodName+"(("+$TableColumnDescriptor.Column.JavaType+") row.get("+$TableColumnDescriptor.Column.Name+"))")
+#set(  $varName3 = "row.get("+$TableColumnDescriptor.Column.Name+")")
+			if($varName3 != null && $varName3 instanceof $TableColumnDescriptor.Column.JavaType){
+#if (!$utility.isNullOrEmptyString($TableColumnDescriptor.ConverterMethodName))
+#set(  $varName2c = "."+$TableColumnDescriptor.SetterMethodName+"("+$entityVariableName+"."+$TableColumnDescriptor.ConverterMethodName +"(("+$TableColumnDescriptor.Column.JavaType+") row.get("+$TableColumnDescriptor.Column.Name+")))")
+				$entityVariableName$varName2c;
+#else
+				$entityVariableName$varName2;
+#end
+			}
+#end
+			$entityVariableNameList$varName1;
+		}
+		return $entityVariableNameList;
+	}
+
+    public RowMapper<$entityName> getRowMapperFor$entityName(){
+    return new RowMapper<$entityName>() {
+        @Override
+        public $entityName mapRow(ResultSet rs, int rowNum) throws SQLException {
+            $entityName $entityVariableName = new $entityName();
+    #foreach($TableColumnDescriptor in $TableDescriptor.ColumnDescriptors)
+    #set(  $varName2 = "."+$TableColumnDescriptor.SetterMethodName+"(rs."+$TableColumnDescriptor.Column.ResultSetMethod+"("+$TableColumnDescriptor.Column.Name+"))")
+            $entityVariableName$varName2;
+    #end
+        return $entityVariableName;
+        }
+    };
+    }
+}

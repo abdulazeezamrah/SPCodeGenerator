@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spmetadata>
+    <sp_name>PR_SAHL_CreateOrUpdateTableSchema</sp_name>
+    <input_parameters>
+        <column name="DataDefinitionId" type="nvarchar"/>
+        <column name="SchemaExists" type="bit"/>
+        <column name="TableExists" type="bit"/>
+    </input_parameters>
+    <output_parameters>
+        <column name="OutputScript" type="nvarchar"/>
+    </output_parameters>
+    <return_result_sets>
+    </return_result_sets>
+</spmetadata>

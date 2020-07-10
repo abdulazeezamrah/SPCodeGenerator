@@ -1,0 +1,25 @@
+package $TableDescriptor.MappedBeanPackageName;
+
+/**
+ * 
+ * Auto generated code
+ *
+ */
+
+public class $TableDescriptor.MappedBeanClassName {
+
+//Fields
+#foreach($TableColumnDescriptor in $TableDescriptor.ColumnDescriptors)	
+  private $TableColumnDescriptor.Column.JavaType $utility.toCamelCaseForVariable($TableColumnDescriptor.Column.Name);
+#end
+
+//Accessors
+#foreach($TableColumnDescriptor in $TableDescriptor.ColumnDescriptors)	
+  public $TableColumnDescriptor.Column.JavaType get$utility.toCamelCaseForAccessors($TableColumnDescriptor.Column.Name)() {
+    return this.$utility.toCamelCaseForVariable($TableColumnDescriptor.Column.Name);
+  }	
+  public void set$utility.toCamelCaseForAccessors($TableColumnDescriptor.Column.Name)($TableColumnDescriptor.Column.JavaType $utility.toCamelCaseForVariable($TableColumnDescriptor.Column.Name)) {
+    this.$utility.toCamelCaseForVariable($TableColumnDescriptor.Column.Name) = $utility.toCamelCaseForVariable($TableColumnDescriptor.Column.Name);
+  }
+#end
+}

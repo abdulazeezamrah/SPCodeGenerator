@@ -1,0 +1,42 @@
+#if ($SpDescriptor.SpInputClassName)
+package $SpDescriptor.SpInputClassPackageName;
+#foreach($ResultSetDescriptor in $SpDescriptor.ResultSetDescriptors)	
+import $ResultSetDescriptor.MappedEntityPackageName.$ResultSetDescriptor.MappedEntityClassName;
+#end
+import java.util.List;
+/**
+ * 
+ * Auto generated code
+ * Bean for output parameters and result set to stored procedure $SpDescriptor.SpName
+ *
+ */
+public class $SpDescriptor.SpResultClassName {
+
+//Fields
+#foreach($NameTypeBean in $SpDescriptor.OutputParameters)	
+  private $NameTypeBean.JavaType $utility.toCamelCaseForVariable($NameTypeBean.Name);
+#end
+#foreach($ResultSetDescriptor in $SpDescriptor.ResultSetDescriptors)	
+  private List<$ResultSetDescriptor.MappedEntityClassName> $utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName)List;
+#end
+//Accessors
+#foreach($NameTypeBean in $SpDescriptor.OutputParameters)	
+  public $NameTypeBean.JavaType get$utility.toCamelCaseForAccessors($NameTypeBean.Name)() {
+    return this.$utility.toCamelCaseForVariable($NameTypeBean.Name);
+  }	
+  public void set$utility.toCamelCaseForAccessors($NameTypeBean.Name)($NameTypeBean.JavaType $utility.toCamelCaseForVariable($NameTypeBean.Name)) {
+    this.$utility.toCamelCaseForVariable($NameTypeBean.Name) = $utility.toCamelCaseForVariable($NameTypeBean.Name);
+  }
+#end
+
+#foreach($ResultSetDescriptor in $SpDescriptor.ResultSetDescriptors)	
+  public List<$ResultSetDescriptor.MappedEntityClassName> get$utility.toSameString($ResultSetDescriptor.MappedEntityClassName)List() {
+    return this.$utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName)List;
+  }	
+  public void set$utility.toSameString($ResultSetDescriptor.MappedEntityClassName)List(List<$ResultSetDescriptor.MappedEntityClassName> $utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName)List) {
+    this.$utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName)List = $utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName)List;
+  }
+#end
+
+}
+#end

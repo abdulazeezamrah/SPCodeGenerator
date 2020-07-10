@@ -1,0 +1,146 @@
+package $SpDescriptor.SpExecutorClassPackageName;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.sql.DataSource;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.core.SqlReturnResultSet;
+import org.springframework.jdbc.object.StoredProcedure;
+import org.springframework.jdbc.core.SqlOutParameter;
+import org.springframework.stereotype.Repository;
+import $SpDescriptor.SpInputClassPackageName.$SpDescriptor.SpInputClassName;
+import $SpDescriptor.SpResultClassPackageName.$SpDescriptor.SpResultClassName;
+#foreach($ResultSetDescriptor in $SpDescriptor.ResultSetDescriptors)	
+import $ResultSetDescriptor.MappedEntityPackageName.$ResultSetDescriptor.MappedEntityClassName;
+#end
+import com.elm.sahl.domain.sqlprofiling.LogSql;
+
+/**
+ * 
+ * Auto generated code
+ * Executor class for  stored procedure $SpDescriptor.SpName
+ *
+ */
+ @Repository
+public class $SpDescriptor.SpExecutorClassName extends StoredProcedure {
+	private static final String PROC_NAME = "$SpDescriptor.SpName";
+	
+	// SP Input Parameters
+	#foreach($NameTypeBean in $SpDescriptor.InputParameters)	
+  	private static final String  $utility.toInputParam($NameTypeBean.Name) = "$utility.toSameString($NameTypeBean.Name)";
+	#end
+	
+	// SP Output Parameters
+	#foreach($NameTypeBean in $SpDescriptor.OutputParameters)	
+  	private static final String  $utility.toOutputParam($NameTypeBean.Name) = "$utility.toSameString($NameTypeBean.Name)";
+	#end
+	
+	// SP Return Result Set
+	#foreach($ResultSetDescriptor in $SpDescriptor.ResultSetDescriptors)	
+  	private static final String RESULT_SET_$ResultSetDescriptor.ResultSetName = "RESULT_SET_$ResultSetDescriptor.ResultSetName";
+	#end
+
+	@Autowired
+    @Qualifier("dataSource")
+	public void setDataSource(DataSource dataSource) {
+		super.setDataSource(dataSource);
+        this.setSql(PROC_NAME);
+#foreach($ResultSetDescriptor in $SpDescriptor.ResultSetDescriptors)	
+#set( $rowMapperName = "ResultSetRowMapper" + $ResultSetDescriptor.ResultSetName )
+		declareParameter(new SqlReturnResultSet(RESULT_SET_$ResultSetDescriptor.ResultSetName, new $rowMapperName()));
+#end
+#foreach($NameTypeBean in $SpDescriptor.InputParameters)	
+		declareParameter(new SqlParameter($utility.toInputParam($NameTypeBean.Name), Types.$NameTypeBean.Type));
+#end
+#foreach($NameTypeBean in $SpDescriptor.OutputParameters)	
+		declareParameter(new SqlOutParameter($utility.toOutputParam($NameTypeBean.Name), Types.$NameTypeBean.Type));
+#end
+		compile();
+	}
+
+#set( $methReturn = "void")
+#set( $methArg = "")
+ #if ($SpDescriptor.SpResultClassName)
+ #set( $methReturn = $SpDescriptor.SpResultClassName)
+ #end
+  #if ($SpDescriptor.SpInputClassName)
+   #set( $methArg = "" + $SpDescriptor.SpInputClassName + " " + $utility.toCamelCaseForVariable($SpDescriptor.SpInputClassName))
+  #end
+
+	@SuppressWarnings("unchecked")
+	#if ($SpDescriptor.LogSql)
+	@LogSql(spName="$SpDescriptor.SpName")
+	#end
+	public $methReturn execute($methArg) {
+		HashMap<String, Object> hmap = new HashMap<String, Object>();
+#foreach($NameTypeBean in $SpDescriptor.InputParameters)
+#set( $keyIp = $utility.toInputParam($NameTypeBean.Name))
+#set( $valueIp1 = $utility.toCamelCaseForVariable($SpDescriptor.SpInputClassName))
+#set( $valueIp2 = ".get" + $utility.toCamelCaseForAccessors($NameTypeBean.Name)+"()")
+  		hmap.put($keyIp,$valueIp1$valueIp2);
+#end
+		
+		Map<String, Object> results = execute(hmap);
+		$SpDescriptor.SpResultClassName $utility.toCamelCaseForVariable($SpDescriptor.SpResultClassName) = new $utility.toSameString($SpDescriptor.SpResultClassName)();
+#foreach($NameTypeBean in $SpDescriptor.OutputParameters)	
+		$NameTypeBean.JavaType $utility.toCamelCaseForVariable($NameTypeBean.Name) = ($NameTypeBean.JavaType) results.get($utility.toOutputParam($NameTypeBean.Name));
+#set( $valueOp1 = $utility.toCamelCaseForVariable($SpDescriptor.SpResultClassName))
+#set( $valueOp2 = ".set" + $utility.toCamelCaseForAccessors($NameTypeBean.Name) + "("+($utility.toCamelCaseForVariable($NameTypeBean.Name))+")")
+  		$valueOp1$valueOp2;
+#end
+		
+#foreach($ResultSetDescriptor in $SpDescriptor.ResultSetDescriptors)	
+		List<$ResultSetDescriptor.MappedEntityClassName> $utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName)List = (List<$ResultSetDescriptor.MappedEntityClassName>) results.get(RESULT_SET_$ResultSetDescriptor.ResultSetName);
+#set( $valueRs1 = $utility.toCamelCaseForVariable($SpDescriptor.SpResultClassName))
+#set( $valueRs2 = ".set" + $utility.toSameString($ResultSetDescriptor.MappedEntityClassName)+"List("+$utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName)+"List)")
+		$valueRs1$valueRs2;
+#end
+	
+		return $utility.toCamelCaseForVariable($SpDescriptor.SpResultClassName);
+	}
+
+#foreach($ResultSetDescriptor in $SpDescriptor.ResultSetDescriptors)	
+#set( $rowMapperName = "ResultSetRowMapper" + $ResultSetDescriptor.ResultSetName )
+private class $rowMapperName implements RowMapper<$ResultSetDescriptor.MappedEntityClassName> {
+#foreach($ResultSetColumnDescriptor in $ResultSetDescriptor.ColumnDescriptors)	
+	private static final String  $utility.toInputParam($ResultSetColumnDescriptor.ResultSetColumn.Name) = "$utility.toSameString($ResultSetColumnDescriptor.ResultSetColumn.Name)";
+#end
+		
+		@Override
+		public $ResultSetDescriptor.MappedEntityClassName mapRow(ResultSet rs, int rowNum) throws SQLException {
+			$ResultSetDescriptor.MappedEntityClassName $utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName) = new $utility.toSameString($ResultSetDescriptor.MappedEntityClassName)();
+#foreach($ResultSetColumnDescriptor in $ResultSetDescriptor.ColumnDescriptors)	
+#if (($ResultSetColumnDescriptor.ResultSetColumn.Type == "STRUCT") && ($ResultSetColumnDescriptor.ConverterMethodName))
+#set( $struct1 = $utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName))
+#set( $struct2 = "."+$ResultSetColumnDescriptor.SetterMethodName+"("+$utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName)+"."+$ResultSetColumnDescriptor.ConverterMethodName+"(rs."+$ResultSetColumnDescriptor.ResultSetColumn.ResultSetMethod+"("+$utility.toInputParam($ResultSetColumnDescriptor.ResultSetColumn.Name)+",java.sql.Struct.class))")
+			$struct1$struct2;
+#elseif ($ResultSetColumnDescriptor.ResultSetColumn.Type == "STRUCT")
+#set( $struct1 = $utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName))
+#set( $struct2 = "."+$ResultSetColumnDescriptor.SetterMethodName+"(rs."+$ResultSetColumnDescriptor.ResultSetColumn.ResultSetMethod+"("+$utility.toInputParam($ResultSetColumnDescriptor.ResultSetColumn.Name)+",java.sql.Struct.class))")
+			$struct1$struct2;
+#end
+#end
+#foreach($ResultSetColumnDescriptor in $ResultSetDescriptor.ColumnDescriptors)	
+#if (($ResultSetColumnDescriptor.ConverterMethodName) && ($ResultSetColumnDescriptor.ResultSetColumn.Type != "STRUCT"))
+#set( $varName11 = $utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName))	
+#set(  $varName21 = "."+$ResultSetColumnDescriptor.SetterMethodName+"("+$utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName)+"."+$ResultSetColumnDescriptor.ConverterMethodName +"(rs."+$ResultSetColumnDescriptor.ResultSetColumn.ResultSetMethod+"("+$utility.toInputParam($ResultSetColumnDescriptor.ResultSetColumn.Name)+")))")
+			$varName11$varName21;
+#elseif ($ResultSetColumnDescriptor.ResultSetColumn.Type != "STRUCT")	
+#set( $varName1 = $utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName))	
+#set(  $varName2 = "."+$ResultSetColumnDescriptor.SetterMethodName+"(rs."+$ResultSetColumnDescriptor.ResultSetColumn.ResultSetMethod+"("+$utility.toInputParam($ResultSetColumnDescriptor.ResultSetColumn.Name)+"))")
+			$varName1$varName2;
+#end
+#end
+			return $utility.toCamelCaseForVariable($ResultSetDescriptor.MappedEntityClassName);
+		}			
+	}
+#end
+	
+}
